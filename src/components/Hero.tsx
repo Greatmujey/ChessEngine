@@ -1,19 +1,19 @@
 import { motion } from "framer-motion";
-import { ArrowDown, Play, Hash, Scale, Timer } from "lucide-react";
-import { PY_BYTES, PY_LINES } from "../lib/pythonSource";
+import { ArrowDown, Play, Hash, Trophy, Timer } from "lucide-react";
+import { PY_BYTES, UNPACKED_BYTES, UNPACKED_LINES } from "../lib/pythonSource";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
 const stats = [
   { icon: Hash, k: "size", v: `${PY_BYTES.toLocaleString()} bytes` },
-  { icon: Scale, k: "rules", v: "full legal chess" },
-  { icon: Timer, k: "speed", v: "depth 3 · ~1s" },
+  { icon: Trophy, k: "rating", v: "1464 practice elo" },
+  { icon: Timer, k: "search", v: "pvs d8 · 32k nodes" },
 ];
 
 const marquee = [
-  "NEGAMAX", "ALPHA-BETA", "QUIESCENCE", "MVV-LVA ORDERING",
-  "PACKED PST TABLES", "CASTLING + EN-PASSANT", "4,088 / 4,096 BYTES",
-  "ZERO DEPENDENCIES", "PERFT-VERIFIED",
+  "SWAR 464-BIT STATE", "PRINCIPAL VARIATION SEARCH", "64K ZOBRIST TT",
+  "TAPERED PESTO EVAL", "NULL-MOVE + LMR + SEE", "4,081 / 4,096 BYTES",
+  "1464 PRACTICE ELO", "ZERO DEPENDENCIES", "MAKEFUN_ENV_URL READY",
 ];
 
 export default function Hero() {
@@ -32,7 +32,7 @@ export default function Hero() {
             className="flex items-center gap-3 font-mono text-[10px] md:text-[11px] tracking-[0.22em] uppercase text-dim mb-7"
           >
             <span className="w-2 h-2 rounded-full bg-mint animate-pulse" />
-            make.fun bounty · tiny-chess-01 · concept entry @greatmujey
+            make.fun bounty · tiny-chess-01 · entry @greatmujey
           </motion.div>
 
           <h1 className="font-display font-bold leading-[0.93] tracking-tight text-[13.5vw] sm:text-7xl lg:text-[5.6rem] xl:text-[6.4rem]">
@@ -66,9 +66,10 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.45, ease }}
             className="mt-7 max-w-xl text-dim text-base md:text-lg leading-relaxed"
           >
-            One Python file. No libraries. Castling, en-passant, mate detection,
-            a real evaluation brain — every byte of the 4 KB budget audited.
-            Below, you play against an exact port of it.
+            One 4,081-byte Python file. Zero third-party libraries. 464-bit SWAR
+            incremental state, Tapered PeSTO + passed-pawn bitboards, Principal
+            Variation Search, 64K Zobrist TT, Null-Move &amp; LMR — live below on
+            Python serverless.
           </motion.p>
 
           <motion.div
@@ -142,9 +143,9 @@ export default function Hero() {
               <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
             </div>
             <pre className="font-mono text-[11px] leading-relaxed text-dim">
-              <span className="text-mint">$</span> python3 tiny-fish.py<span className="cursor-blink text-mint">▌</span>{"\n"}
-              <span className="text-ivory">bestmove b1c3</span>{"\n"}
-              score +0.50 · nodes 1206
+              <span className="text-mint">$</span> python3 -P -s main.py<span className="cursor-blink text-mint">▌</span>{"\n"}
+              <span className="text-ivory">bestmove g8f6 · d8</span>{"\n"}
+              score +0.18 · nodes 32,000
             </pre>
           </motion.div>
 
@@ -156,7 +157,7 @@ export default function Hero() {
           >
             <div className="font-mono text-[10px] text-faint uppercase tracking-widest">payload</div>
             <div className="font-mono text-mint font-bold text-lg">{PY_BYTES.toLocaleString()} B</div>
-            <div className="font-mono text-[10px] text-dim">{PY_LINES} lines of python</div>
+            <div className="font-mono text-[10px] text-dim">{UNPACKED_BYTES.toLocaleString()} B · {UNPACKED_LINES}L unpacked</div>
           </motion.div>
         </motion.div>
       </div>

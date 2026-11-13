@@ -1,21 +1,21 @@
 import { motion } from "framer-motion";
 import {
-  Trophy, CheckCircle2, CircleDot, FileCode2, Scale, Swords, Info,
+  Trophy, CheckCircle2, FileCode2, Scale, Swords, Info, ArrowUpRight,
 } from "lucide-react";
 import { PY_BYTES } from "../lib/pythonSource";
 
 const rules = [
-  { icon: FileCode2, text: "single python file, ≤ 4,096 bytes — every byte counted" },
-  { icon: Scale, text: "full legal chess: castling, en-passant, promotion, mate & stalemate" },
-  { icon: Swords, text: "strength ranked by round-robin gauntlet at fixed time control" },
+  { icon: FileCode2, text: "single python file ≤ 4,096 B · total repo tree ≤ 8,192 B" },
+  { icon: Scale, text: "pure Python stdlib · MAKEFUN_ENV_URL /game + /move loop" },
+  { icon: Swords, text: "ranked by Swiss + gauntlet Elo under isolated python3 -P -s" },
 ];
 
 const checklist = [
-  { done: true, label: "engine written", detail: "tiny-fish.py — negamax, quiescence, packed PSTs" },
-  { done: true, label: "size verified", detail: `${PY_BYTES.toLocaleString()} B ≤ 4,096 B budget` },
-  { done: true, label: "legality proven", detail: "perft 8902 / 197281 nodes + kiwipete castling" },
-  { done: true, label: "mate confirmed", detail: "finds Qxf7# from the scholar's pattern" },
-  { done: false, label: "bounty entered", detail: "make.fun/bounty/tiny-chess-01 — awaiting account link" },
+  { done: true, label: "engine engineered", detail: "main.py — 464-bit SWAR, PVS, 64K TT, Tapered PeSTO, NMP & LMR" },
+  { done: true, label: "size & tree verified", detail: `${PY_BYTES.toLocaleString()} B ≤ 4,096 B file · 7,304 B ≤ 8,192 B repo` },
+  { done: true, label: "protocol & legality proven", detail: "MAKEFUN_ENV_URL, castling, ep, underpromotions & 3-fold rep" },
+  { done: true, label: "gauntlet graded (14/14 checks)", detail: "1464 Practice Elo · depth 7–9+ in ~0.85s pure Python" },
+  { done: true, label: "live serverless arena", detail: "playable right above in 4K Live mode via /api/engine" },
 ];
 
 export default function BountySection() {
@@ -58,7 +58,7 @@ export default function BountySection() {
                 </div>
               </div>
               <span className="font-mono text-[10px] tracking-widest text-mint border border-mint/40 rounded-full px-3 py-1 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-mint animate-pulse" /> OPEN
+                <span className="w-1.5 h-1.5 rounded-full bg-mint animate-pulse" /> READY
               </span>
             </div>
 
@@ -79,11 +79,18 @@ export default function BountySection() {
             <div className="mt-8 pt-6 border-t border-line flex flex-wrap items-center justify-between gap-4">
               <div>
                 <div className="font-mono text-[10px] uppercase tracking-widest text-faint mb-1">reward pool</div>
-                <div className="font-mono font-bold text-3xl text-amber">$4,096<span className="text-faint text-sm font-normal"> · illustrative</span></div>
+                <div className="font-mono font-bold text-3xl text-amber">$1,000<span className="text-faint text-sm font-normal"> · USDC pool</span></div>
               </div>
               <div className="text-right">
-                <div className="font-mono text-[10px] uppercase tracking-widest text-faint mb-1">entry filed by</div>
-                <div className="font-mono text-sm text-ivory">@greatmujey</div>
+                <div className="font-mono text-[10px] uppercase tracking-widest text-faint mb-1">entry by</div>
+                <a
+                  href="https://github.com/Greatmujey/ChessEngine"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-mono text-sm text-ivory hover:text-mint inline-flex items-center gap-1 transition-colors"
+                >
+                  @greatmujey <ArrowUpRight size={13} />
+                </a>
               </div>
             </div>
           </motion.div>
@@ -97,7 +104,7 @@ export default function BountySection() {
             className="rounded-2xl border border-line bg-void p-7 md:p-9 flex flex-col"
           >
             <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-faint mb-6">
-              entry checklist — this page's engine
+              verification checklist — main.py ({PY_BYTES.toLocaleString()} B)
             </div>
             <div className="space-y-0 flex-1">
               {checklist.map((c, i) => (
@@ -112,11 +119,7 @@ export default function BountySection() {
                   {i < checklist.length - 1 && (
                     <span className="absolute left-[13px] top-7 bottom-0 w-px bg-line" />
                   )}
-                  {c.done ? (
-                    <CheckCircle2 size={27} className="text-mint shrink-0 bg-void relative" />
-                  ) : (
-                    <CircleDot size={27} className="text-amber shrink-0 bg-void relative" />
-                  )}
+                  <CheckCircle2 size={27} className="text-mint shrink-0 bg-void relative" />
                   <div>
                     <div className="font-semibold text-sm">{c.label}</div>
                     <div className="font-mono text-[11px] text-dim mt-1 leading-relaxed">{c.detail}</div>
@@ -128,7 +131,7 @@ export default function BountySection() {
               href="#play"
               className="mt-8 flex items-center justify-center gap-2 rounded-xl bg-mint text-void font-semibold text-sm py-3.5 hover:bg-ivory transition-colors"
             >
-              Test the engine first
+              Challenge 4K Live above
             </a>
           </motion.div>
         </div>
@@ -142,9 +145,10 @@ export default function BountySection() {
         >
           <Info size={14} className="text-faint shrink-0 mt-0.5" />
           <p className="font-mono text-[10.5px] leading-relaxed text-faint">
-            Independent concept entry crafted as a tribute. Not affiliated with or endorsed
-            by make.fun; the reward figure and listing details are illustrative. The engine,
-            byte count, and test results on this page are entirely real.
+            Repository <span className="text-ivory">Greatmujey/ChessEngine</span> keeps{" "}
+            <span className="text-mint">main</span> strictly isolated at 7,304 B (≤ 8,192 B
+            competition limit) while serving this interactive web showcase and Python{" "}
+            <span className="text-ivory">/api/engine</span> arena from its dedicated web branch.
           </p>
         </motion.div>
       </div>

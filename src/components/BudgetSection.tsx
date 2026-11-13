@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { sections, PY_BYTES } from "../lib/pythonSource";
+import { sections, PY_BYTES, UNPACKED_BYTES } from "../lib/pythonSource";
 
 export default function BudgetSection() {
   const secs = sections();
@@ -27,10 +27,12 @@ export default function BudgetSection() {
               <span className="font-serif italic font-normal text-dim">kilobyte went.</span>
             </h2>
             <p className="mt-6 text-dim text-sm md:text-base leading-relaxed max-w-md">
-              Four kilobytes is 4,096 chances to be clever. Split by the
-              <span className="font-mono text-mint/90"> #@[marker]</span> comments in the
-              file, here is the real cost of each subsystem — and the bytes
-              deliberately left on the table.
+              Four kilobytes is 4,096 chances to be clever. From{" "}
+              <span className="font-mono text-ivory">{UNPACKED_BYTES.toLocaleString()} B</span>{" "}
+              of raw SWAR + PVS Python down to{" "}
+              <span className="font-mono text-mint/90">{PY_BYTES.toLocaleString()} B</span>{" "}
+              via LZMA + printable Base-92, here is the real compressed share of
+              every subsystem.
             </p>
 
             <motion.div
@@ -45,10 +47,10 @@ export default function BudgetSection() {
               <div className="absolute bottom-4 left-5 right-5 flex items-end justify-between">
                 <div>
                   <div className="font-mono font-bold text-4xl text-ivory">{spare}</div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-dim">bytes unused · discipline</div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-dim">bytes unused · safety margin</div>
                 </div>
                 <div className="font-mono text-[10px] text-mint border border-mint/30 rounded-full px-3 py-1 bg-void/70 backdrop-blur">
-                  0 dependencies
+                  1.54× lzma · 0 deps
                 </div>
               </div>
             </motion.div>
@@ -64,7 +66,7 @@ export default function BudgetSection() {
           >
             {/* stacked */}
             <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em] text-faint mb-3">
-              <span>allocation map</span>
+              <span>allocation map · main.py</span>
               <span>{total.toLocaleString()} / 4,096 B</span>
             </div>
             <div className="flex h-9 rounded-lg overflow-hidden border border-line mb-10">
@@ -76,7 +78,7 @@ export default function BudgetSection() {
                   initial={{ width: 0 }}
                   whileInView={{ width: `${(s.bytes / 4096) * 100}%` }}
                   viewport={{ once: true }}
-                  transition={{ duration: 1, delay: 0.2 + i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: 1, delay: 0.2 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
                   title={`${s.label}: ${s.bytes} B`}
                 />
               ))}
@@ -116,14 +118,14 @@ export default function BudgetSection() {
                         initial={{ width: 0 }}
                         whileInView={{ width: `${(s.bytes / total) * 100}%` }}
                         viewport={{ once: true }}
-                        transition={{ duration: 1.1, delay: 0.15 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ duration: 1.1, delay: 0.15 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
                       />
                     </div>
                   </div>
                 );
               })}
               <div className="pt-2 flex items-center justify-between font-mono text-[11px] text-faint border-t border-line">
-                <span>total payload</span>
+                <span>total competition payload</span>
                 <span className="text-mint">{PY_BYTES.toLocaleString()} bytes of 4,096 allowed</span>
               </div>
             </div>

@@ -15,7 +15,7 @@ export default function Footer() {
                 tiny<span className="text-mint">//</span>fish
               </div>
               <div className="font-mono text-[10px] text-faint">
-                built with {PY_BYTES.toLocaleString()} of the 4,096 permitted bytes
+                built with {PY_BYTES.toLocaleString()} of the 4,096 permitted bytes · 1464 practice elo
               </div>
             </div>
           </div>
@@ -26,14 +26,22 @@ export default function Footer() {
                 {l}
               </a>
             ))}
-            <a href="/tiny-fish.py" download="tiny-fish.py" className="hover:text-mint transition-colors inline-flex items-center gap-1">
-              the .py <ArrowUpRight size={11} />
+            <a href="/main.py" download="main.py" className="hover:text-mint transition-colors inline-flex items-center gap-1">
+              main.py <ArrowUpRight size={11} />
+            </a>
+            <a
+              href="https://github.com/Greatmujey/ChessEngine"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-mint transition-colors inline-flex items-center gap-1"
+            >
+              github <ArrowUpRight size={11} />
             </a>
           </nav>
         </div>
 
         <div className="mt-10 pt-6 border-t border-line flex flex-col sm:flex-row justify-between gap-3 font-mono text-[10px] text-faint">
-          <span>concept entry for make.fun/bounty/tiny-chess-01 · by @greatmujey</span>
+          <span>entry for make.fun/bounty/tiny-chess-01 · by @greatmujey</span>
           <span className="font-serif italic text-xs normal-case tracking-normal text-dim">
             good things come in small binaries.
           </span>

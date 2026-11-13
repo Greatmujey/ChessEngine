@@ -33,7 +33,7 @@ export default function Nav() {
             tiny<span className="text-mint">//</span>fish
           </span>
           <span className="hidden sm:inline font-mono text-[10px] text-faint border border-line rounded px-1.5 py-0.5 ml-1">
-            {PY_BYTES.toLocaleString()} B
+            {PY_BYTES.toLocaleString()} B · 1464 elo
           </span>
         </a>
         <nav className="hidden md:flex items-center gap-7 font-mono text-[11px] tracking-[0.18em] uppercase text-dim">
@@ -44,12 +44,12 @@ export default function Nav() {
           ))}
         </nav>
         <a
-          href="/tiny-fish.py"
-          download="tiny-fish.py"
+          href="/main.py"
+          download="main.py"
           className="flex items-center gap-2 font-mono text-[11px] tracking-wider border border-line rounded-full px-4 py-2 hover:border-mint hover:text-mint transition-colors"
         >
           <Download size={13} />
-          <span className="hidden sm:inline">tiny-fish.py</span>
+          <span className="hidden sm:inline">main.py</span>
           <span className="sm:hidden">.py</span>
         </a>
       </div>

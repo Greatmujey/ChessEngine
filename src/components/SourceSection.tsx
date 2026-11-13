@@ -1,10 +1,18 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Copy, Check, Download, PackageX, Braces, Workflow } from "lucide-react";
-import { PY, PY_BYTES, PY_LINES } from "../lib/pythonSource";
+import { Copy, Check, Download, Cpu, Workflow, Binary } from "lucide-react";
+import {
+  MAIN_PY,
+  MAIN_PY_UNPACKED,
+  TINY_PY,
+  PY_BYTES,
+  UNPACKED_BYTES,
+  UNPACKED_LINES,
+  TINY_BYTES,
+} from "../lib/pythonSource";
 
 const RE =
-  /("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#.*$)|(\b(?:def|return|yield|for|in|if|elif|else|while|import|global|not|and|or|lambda|is|None|True|False)\b)|(\b(?:enumerate|sum|sorted|dict|range|int|str|bool|print|any|all|len|ord|divmod|list|set|min|max|abs)\b)|(\b\d+\b)/g;
+  /("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#.*$)|(\b(?:def|return|yield|for|in|if|elif|else|while|import|as|global|not|and|or|lambda|is|None|True|False|break|continue)\b)|(\b(?:enumerate|sum|sorted|dict|range|int|str|bool|print|any|all|len|ord|chr|divmod|list|set|min|max|abs|pow|exec)\b)|(\b\d+\b)/g;
 
 function Highlighted({ line }: { line: string }) {
   const out: React.ReactNode[] = [];
@@ -28,33 +36,66 @@ function Highlighted({ line }: { line: string }) {
   return <>{out}</>;
 }
 
-const notes = [
+const TABS = [
   {
-    icon: PackageX,
-    t: "zero dependencies",
-    d: "One file, one stdlib import (sys). No python-chess, no numpy — the referee can audit it in a glance.",
+    id: "unpacked",
+    label: "main.py · unpacked",
+    sub: `${UNPACKED_BYTES.toLocaleString()} B · ${UNPACKED_LINES}L`,
+    code: MAIN_PY_UNPACKED,
+    dlHref: "/main.py",
+    dlName: "main.py",
+    wrap: false,
   },
   {
-    icon: Braces,
-    t: "tables packed as ascii",
-    d: "Each piece-square table is 64 printable characters — one byte per square: value = ord(ch) − 42.",
+    id: "packed",
+    label: "main.py · 4,081 B",
+    sub: "lzma + base92",
+    code: MAIN_PY,
+    dlHref: "/main.py",
+    dlName: "main.py",
+    wrap: true,
+  },
+  {
+    id: "tiny",
+    label: "tiny-fish.py",
+    sub: `${TINY_BYTES.toLocaleString()} B ref`,
+    code: TINY_PY,
+    dlHref: "/tiny-fish.py",
+    dlName: "tiny-fish.py",
+    wrap: false,
+  },
+] as const;
+
+const notes = [
+  {
+    icon: Cpu,
+    t: "464-bit SWAR single-int state",
+    d: "Middlegame & endgame tapered PeSTO scores, phase, piece counts, pawn bitboards, king squares, and 64-bit Zobrist hash update in one p += delta integer op.",
   },
   {
     icon: Workflow,
-    t: "quiescence, merged",
-    d: "The tactical extension pass is folded into the negamax core itself so the search costs bytes once.",
+    t: "PVS + 64K TT + NMP + LMR + SEE",
+    d: "Iterative deepening Principal Variation Search with Zobrist transposition table, Reverse Futility, Null-Move Pruning, Late Move Reductions, and SEE quiescence.",
+  },
+  {
+    icon: Binary,
+    t: "printable Base-92 + LZMA (1.54×)",
+    d: "Packs 6,283 bytes of pure Python stdlib chess + MAKEFUN_ENV_URL loop into 4,081 ASCII-safe bytes with 15 bytes to spare under the 4,096 B rule.",
   },
 ];
 
 export default function SourceSection() {
+  const [tabId, setTabId] = useState<(typeof TABS)[number]["id"]>("unpacked");
   const [copied, setCopied] = useState(false);
-  const lines = useMemo(() => PY.replace(/\n$/, "").split("\n"), []);
+
+  const active = TABS.find((t) => t.id === tabId) ?? TABS[0];
+  const lines = useMemo(() => active.code.replace(/\n$/, "").split("\n"), [active]);
   const pct = (PY_BYTES / 4096) * 100;
   const R = 44, C = 2 * Math.PI * R;
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(PY);
+      await navigator.clipboard.writeText(active.code);
       setCopied(true);
       setTimeout(() => setCopied(false), 1600);
     } catch { /* clipboard unavailable */ }
@@ -80,9 +121,11 @@ export default function SourceSection() {
               <span className="font-serif italic font-normal text-dim">on the record.</span>
             </h2>
             <p className="mt-6 text-dim text-sm md:text-base leading-relaxed max-w-md">
-              This is the exact file that would be entered — the same bytes the
-              download button serves, the same logic you just played against,
-              perft-verified to the node.
+              Inspect both the unpacked 142-line SWAR + PVS engine and the exact
+              4,081-byte <span className="font-mono text-ivory">main.py</span>{" "}
+              payload running live on <span className="font-mono text-mint">/api/engine</span>{" "}
+              — plus the uncompressed <span className="font-mono text-ivory">tiny-fish.py</span>{" "}
+              reference engine.
             </p>
 
             {/* gauge */}
@@ -108,10 +151,10 @@ export default function SourceSection() {
                 </div>
               </div>
               <div className="font-mono text-xs leading-relaxed">
-                <div><span className="text-ivory">{PY_BYTES.toLocaleString()}</span> <span className="text-faint">/ 4,096 bytes</span></div>
-                <div><span className="text-ivory">{PY_LINES}</span> <span className="text-faint">lines</span></div>
+                <div><span className="text-ivory">{PY_BYTES.toLocaleString()}</span> <span className="text-faint">/ 4,096 bytes (main.py)</span></div>
+                <div><span className="text-ivory">{UNPACKED_BYTES.toLocaleString()} B</span> <span className="text-faint">unpacked · {UNPACKED_LINES} lines</span></div>
                 <div className="mt-2 inline-flex items-center gap-1.5 border border-amber/40 text-amber rounded-full px-2.5 py-1 text-[10px] tracking-wider uppercase">
-                  {(4096 - PY_BYTES)} bytes to spare
+                  {4096 - PY_BYTES} bytes to spare
                 </div>
               </div>
             </div>
@@ -125,17 +168,29 @@ export default function SourceSection() {
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             className="rounded-2xl border border-line bg-[#0d0c0a] shadow-[0_40px_100px_-40px_rgba(0,0,0,0.9)] overflow-hidden"
           >
-            <div className="flex items-center justify-between px-4 py-3 border-b border-line bg-panel/60">
-              <div className="flex items-center gap-3">
-                <div className="flex gap-1.5">
+            <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-line bg-panel/60">
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex gap-1.5 mr-1">
                   <span className="w-3 h-3 rounded-full bg-[#ff5f57]" />
                   <span className="w-3 h-3 rounded-full bg-[#febc2e]" />
                   <span className="w-3 h-3 rounded-full bg-[#28c840]" />
                 </div>
-                <span className="font-mono text-xs text-dim">tiny-fish.py</span>
-                <span className="font-mono text-[9px] text-faint border border-line rounded px-1.5 py-0.5">python 3 · stdlib</span>
+                {TABS.map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => setTabId(t.id)}
+                    className={`font-mono text-[10.5px] rounded-lg px-2.5 py-1 border transition-colors ${
+                      tabId === t.id
+                        ? "border-mint/60 bg-mint/10 text-mint"
+                        : "border-line text-dim hover:text-ivory"
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                ))}
               </div>
               <div className="flex items-center gap-1">
+                <span className="hidden sm:inline font-mono text-[9px] text-faint mr-1">{active.sub}</span>
                 <button
                   onClick={copy}
                   className="p-2 rounded-lg text-dim hover:text-mint hover:bg-mint/10 transition-colors"
@@ -144,10 +199,10 @@ export default function SourceSection() {
                   {copied ? <Check size={15} className="text-mint" /> : <Copy size={15} />}
                 </button>
                 <a
-                  href="/tiny-fish.py"
-                  download="tiny-fish.py"
+                  href={active.dlHref}
+                  download={active.dlName}
                   className="p-2 rounded-lg text-dim hover:text-mint hover:bg-mint/10 transition-colors"
-                  title="Download"
+                  title={`Download ${active.dlName}`}
                 >
                   <Download size={15} />
                 </a>
@@ -158,7 +213,9 @@ export default function SourceSection() {
                 {lines.map((l, i) => (
                   <div key={i} className="flex hover:bg-ivory/[0.03] px-4">
                     <span className="w-8 shrink-0 text-right text-faint/70 select-none pr-4">{i + 1}</span>
-                    <code className="whitespace-pre text-[#cfc8b4]">{l === "" ? " " : <Highlighted line={l} />}</code>
+                    <code className={`${active.wrap ? "whitespace-pre-wrap break-all" : "whitespace-pre"} text-[#cfc8b4]`}>
+                      {l === "" ? " " : <Highlighted line={l} />}
+                    </code>
                   </div>
                 ))}
               </pre>

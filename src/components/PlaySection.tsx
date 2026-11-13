@@ -262,13 +262,14 @@ export default function PlaySection() {
             </div>
             <h2 className="font-display font-bold text-4xl md:text-6xl tracking-tight leading-[0.95]">
               Sit down.<br />
-              <span className="font-serif italic font-normal text-dim">Play 4,088 bytes.</span>
+              <span className="font-serif italic font-normal text-dim">Play {PY_BYTES.toLocaleString()} bytes.</span>
             </h2>
           </div>
           <p className="max-w-sm text-dim text-sm leading-relaxed">
-            This board runs a line-for-line JavaScript port of the submission's
-            brain. If it beats you here, imagine what the Python does with a
-            real clock.
+            In <span className="font-mono text-mint">4K Live</span> mode, every move is searched
+            server-side by our exact 4,081-byte Python competition engine (1464
+            Practice Elo) — or switch to Casual, Club, or Master for instant
+            in-browser JavaScript play.
           </p>
         </motion.div>
 
@@ -590,7 +591,9 @@ export default function PlaySection() {
 
             <div className="flex items-center gap-2 text-faint font-mono text-[10px] leading-relaxed">
               <ChevronRight size={11} className="shrink-0" />
-              same negamax + quiescence + tables as the .py — it just wears javascript here.
+              {EASY[diff]?.server
+                ? "live python serverless (/api/engine) · 4,081 B main.py · PVS + 64K TT + Tapered PeSTO."
+                : "in-browser javascript engine · negamax + quiescence + packed piece-square tables."}
             </div>
           </motion.div>
         </div>
